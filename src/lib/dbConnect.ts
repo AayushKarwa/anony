@@ -1,4 +1,3 @@
-import exp from "constants";
 import mongoose from "mongoose";
 
 type connectionObject = {
