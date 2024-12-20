@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
 import {  useDebounceCallback } from 'usehooks-ts';
@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation'
 import { signUpSchema } from '@/Schemas/signUpSchema';
 import axios, { AxiosError } from 'axios';
 import { ApiResponse } from '@/types/apiResponse';
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
@@ -26,7 +26,7 @@ const SignUpPage = () => {
 
     const debounced = useDebounceCallback(setUsername, 500);
 
-    const form = useForm({
+    const form = useForm<z.infer<typeof signUpSchema>>({
         resolver: zodResolver(signUpSchema),
         defaultValues: {
             username: '',
@@ -86,7 +86,7 @@ const SignUpPage = () => {
                     <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">JOIN ANONY MESSAGE!</h1>
                     <p className="mb-4">Sign up to start your anonymous adventure!</p>
                 </div>
-                <FormProvider {...form}>
+                <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <FormField
                             name="username"
@@ -151,7 +151,7 @@ const SignUpPage = () => {
                             )}
                         </Button>
                     </form>
-                </FormProvider>
+                </Form>
                 <div className="text-center mt-4">
                     <p>
                         Already a member?{' '}
