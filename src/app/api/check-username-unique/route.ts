@@ -49,7 +49,7 @@ export async function GET(req:Request){
        return Response.json({
         success: true,
         message:"Username is available"
-    },{status:400})
+    },{status:200})
         
         
     } catch (err) {
