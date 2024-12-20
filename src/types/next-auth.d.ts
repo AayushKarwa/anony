@@ -15,6 +15,7 @@ declare module 'next-auth'{
             isAcceptingMessages?: boolean,
             username?: string,
         } & DefaultSession['user']
+        
     }
 
 
