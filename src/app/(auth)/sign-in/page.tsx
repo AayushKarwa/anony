@@ -48,7 +48,7 @@ const SignInPage = () => {
                     title: 'Login successful',
                     description: 'Redirecting to dashboard...',
                 });
-                router.push('/dashboard');
+                router.replace('/dashboard');
             }
         } catch (error) {
             toast({

@@ -1,4 +1,4 @@
-import { AuthOptions, NextAuthOptions } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import dbConnect from "@/lib/dbConnect";
@@ -11,37 +11,34 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text" },
-        password: { label: "password", type: "password" },
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials:any): Promise<any>{
-          await dbConnect();
-           try {
-           const user = await UserModel.findOne({
-              $or: [
-                {email: credentials.identifier},
-                {username: credentials.identifier}
-              ]
-            })
-            if(!user){
-              throw new Error("No user found with this email or username")
-            }
+      async authorize(credentials: any): Promise<any> {
+        await dbConnect();
+        try {
+          const user = await UserModel.findOne({
+            $or: [{ email: credentials.identifier }, { username: credentials.identifier }],
+          });
 
-            if(!user.isVerified){
-              throw new Error("please verify your account before login")
-            }
+          if (!user) {
+            throw new Error("No user found with this email or username.");
+          }
 
-            const isPasswordCorrect = await bcrypt.compare(credentials.password,user.password)
+          if (!user.isVerified) {
+            throw new Error("Please verify your account before logging in.");
+          }
 
-            if(isPasswordCorrect){
-              return user;
-            }else{
-              throw new Error("Incorrect password")
-            }
+          const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
 
+          if (!isPasswordCorrect) {
+            throw new Error("Incorrect password.");
+          }
 
-           } catch (err:any) {
-            throw new Error(err)
-           }
+          return user;
+        } catch (err: any) {
+          console.error("Authorization error:", err.message);
+          throw new Error(err.message);
+        }
       },
     }),
   ],
@@ -62,7 +59,7 @@ export const authOptions: NextAuthOptions = {
         session.user.isAcceptingMessages = token.isAcceptingMessages,
         session.user.username = token.username
       }
-      return session
+      return session;
     }
    
   },
