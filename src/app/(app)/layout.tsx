@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Anony - Anonymous Chat & Social App",
     description: "Connect anonymously and securely on Anony. Share your thoughts and ideas without revealing your identity.",
-    url: , // Replace with your actual domain
+    url: process.env.VERCEL_URL, 
     siteName: "Anony",
     type: "website",
   },
