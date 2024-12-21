@@ -4,7 +4,7 @@ import { ApiResponse } from "@/types/apiResponse";
 
 export async function sendVerificationEmail(email: string, username: string, verifyCode: string) {
     try {
-      const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+      const BASE_URL = process.env.VERCEL_URL || 'http://localhost:3000';
       await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: email,
