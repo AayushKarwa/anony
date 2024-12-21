@@ -1,0 +1,28 @@
+[
+    {
+      "title": "Welcome message from user221",
+      "content": "Hey, when we hitting gym!?",
+      "received": "1 hour ago"
+    },
+    {
+      "title": "Reminder from user456",
+      "content": "Don’t forget to bring the notes for tomorrow’s meeting.",
+      "received": "2 hours ago"
+    },
+    {
+      "title": "Invitation from user789",
+      "content": "Let’s catch up for coffee this weekend!",
+      "received": "3 days ago"
+    },
+    {
+      "title": "Question from user123",
+      "content": "Can you help me debug this issue later?",
+      "received": "5 minutes ago"
+    },
+    {
+      "title": "Alert from user567",
+      "content": "There’s been a change in the project deadline.",
+      "received": "6 hours ago"
+    }
+  ]
+  

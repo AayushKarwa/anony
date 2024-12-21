@@ -4,6 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 import { User } from 'next-auth'
 import { Button } from './ui/button'
+import { redirect } from 'next/navigation'
  
  
 const Navbar = () => {
@@ -19,7 +20,9 @@ const Navbar = () => {
                 session? (
                     <>
                     <span className='mr-4'>Welcome, {user?.username || user?.email}</span>
-                    <Button className='w-full md:w-auto' onClick={()=>signOut()}>Logout</Button>
+                    <div className='flex gap-3'><Button onClick={()=>(redirect(`/u/${user.username}`))}>Redirect    </Button>
+                    <Button className='w-full md:w-auto' onClick={()=>signOut()}>Logout</Button></div>
+                    
                     </>
                 ) : (<Link href='/sign-in'>
                     <Button className='w-full md:w-auto'>Login</Button>

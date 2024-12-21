@@ -20,7 +20,7 @@ export async function GET(req:Request){
 
     try {
         const user = await UserModel.aggregate([
-          {$match:{id:userId}},
+          {$match:{_id:userId}},
           {$unwind: '$messages'},
           {$sort:{'messages.createdAt': -1}},
           {$group:{_id:'$_id', messages:{$push:'$messages'}}}
@@ -29,10 +29,10 @@ export async function GET(req:Request){
         if(!user || user.length === 0){
             return Response.json({
                 success:false,
-                message:"User Not found"
+                message:"Data Not Found"
             },{status:404})
         }
-
+            console.log(user);
         return Response.json({
             success:true,
             messages: user[0].messages
