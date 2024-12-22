@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -149,7 +150,11 @@ const Dashboard = () => {
             disabled
             className="input input-bordered w-full p-2 mr-2"
           />
+          <div className="flex gap-3">
           <Button onClick={copyToClipboard}>Copy</Button>
+          <Button onClick={()=>redirect(`/u/${username}`)}>Redirect</Button>
+          </div>
+          
         </div>
       </div>
 

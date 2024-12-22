@@ -51,7 +51,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
   const createdAt = message.createdAt ? new Date(message.createdAt).toDateString() : '';
 
   return (
-    <Card className="card-bordered">
+    <Card className="card-bordered bg-sky-200">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>{message.content || 'No Content Available'}</CardTitle>
