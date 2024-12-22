@@ -77,14 +77,8 @@ const Dashboard = () => {
     if (!session?.user) return;
 
     fetchMessages();
-    console.log("Initial messages fetch: ", messages); // Logs before state updates
     fetchAcceptMessage();
   }, [session, fetchMessages, fetchAcceptMessage]);
-
-  // Logs whenever `messages` state changes
-  useEffect(() => {
-    console.log("Updated messages state: ", messages);
-  }, [messages]);
 
   const handleDeleteMessage = (messageId: string) => {
     setMessages((prev) => prev.filter((msg) => msg._id !== messageId));
@@ -111,16 +105,20 @@ const Dashboard = () => {
   };
 
   const username = session?.user?.username ?? "guest";
-  const baseUrl = `${window.location.protocol}//${window.location.host}`;
-  const profileUrl = `${baseUrl}/u/${username}`;
+  const profileUrl =
+    typeof window !== "undefined"
+      ? `${window.location.protocol}//${window.location.host}/u/${username}`
+      : "";
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(profileUrl);
-      toast({
-        title: "Copied to clipboard",
-        description: "Your profile URL has been copied to clipboard",
-      });
+      if (typeof window !== "undefined") {
+        await navigator.clipboard.writeText(profileUrl);
+        toast({
+          title: "Copied to clipboard",
+          description: "Your profile URL has been copied to clipboard",
+        });
+      }
     } catch {
       toast({
         title: "Error",
