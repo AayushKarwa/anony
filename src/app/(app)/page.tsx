@@ -24,11 +24,11 @@ const Home = () => {
         </p>
       </section>
 
-      <Carousel plugins={[Autoplay({ delay: 2000 })]} className="w-full max-w-lg md:max-w-xl">
+      <Carousel plugins={[Autoplay({ delay: 2000 })]} className="w-full max-w-lg md:max-w-xl bg-red-300">
       <CarouselContent>
         {messages.map((message, index) => (
-          <CarouselItem key={index} className="p-4">
-            <Card>
+          <CarouselItem key={index} className="p-4 bg-lime-50">
+            <Card className="bg-sky-300">
               <CardHeader>
                 <CardTitle>{message.title}</CardTitle>
               </CardHeader>
