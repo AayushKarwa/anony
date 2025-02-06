@@ -16,13 +16,17 @@ jobs:
       - name: Install PNPM
         run: npm install -g pnpm  
 
-      - name: Cache PNPM dependencies
-        uses: actions/cache@v3
+      - name: Cache dependencies & Next.js build
+        uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store 
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          # Generate a new cache whenever dependencies or source files change
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          # If source files changed but dependencies didn’t, restore from the previous cache
           restore-keys: |
-            ${{ runner.os }}-pnpm-
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile  
@@ -31,16 +35,6 @@ jobs:
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: pnpm run build  
-
-      - name: Ensure `.next/cache` Exists
-        run: mkdir -p .next/cache
-
-      - name: Cache Next.js build
-        uses: actions/cache@v3
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: nextjs-${{ runner.os }}-
 
       - name: Deploy to Vercel (Staging)
         run: |
