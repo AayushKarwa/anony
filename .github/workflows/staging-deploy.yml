@@ -34,5 +34,5 @@ jobs:
 
       - name: Deploy to Vercel (Staging)
         run: |
-          pnpm add -g vercel  
+          npm i -g vercel  
           vercel --token ${{ secrets.VERCEL_TOKEN }} --prod=false --yes
