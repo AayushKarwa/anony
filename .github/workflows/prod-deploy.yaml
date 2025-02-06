@@ -1,9 +1,9 @@
-name: Deploy to Staging
+name: Deploy to Production
 
 on:
   push:
     branches:
-      - main
+      - production
 
 jobs:
   deploy:
@@ -19,10 +19,10 @@ jobs:
           node-version: 20
           cache: 'pnpm'  
 
-      - name: Install PNPM (Faster Dependency Management)
+      - name: Install PNPM
         run: npm install -g pnpm
 
-      - name: Install dependencies (Cached)
+      - name: Install dependencies (Faster with Cache)
         run: pnpm install --frozen-lockfile
 
       - name: Cache TurboRepo Build Files
@@ -34,13 +34,11 @@ jobs:
             turbo-${{ runner.os }}-
 
       - name: Build Next.js App (Fast)
-        env:
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: pnpm turbo build
 
-      - name: Deploy to Vercel (Staging)
+      - name: Deploy to Vercel (Production)
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           npm install -g vercel
-          vercel --yes --token $VERCEL_TOKEN --prod=false
+          vercel --prod --yes --token $VERCEL_TOKEN
