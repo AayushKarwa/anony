@@ -6,7 +6,7 @@ export async function sendVerificationEmail(email: string, username: string, ver
     try {
       const BASE_URL = process.env.VERCEL_URL || 'http://localhost:3000';
       await resend.emails.send({
-        from: 'onboarding@resend.dev',
+        from: 'no-reply@ayushk.tech',
         to: email,
         subject: 'Verification Code',
         react: VerificationEmail({ BASE_URL, username, otp: verifyCode }),
