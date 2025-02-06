@@ -16,31 +16,31 @@ jobs:
       - name: Install PNPM
         run: npm install -g pnpm  
 
-      - name: Cache PNPM dependencies
-        uses: actions/cache@v3
+      - name: Ensure Next.js Cache Directory Exists
+        run: mkdir -p ${{ github.workspace }}/.next/cache
+
+      - name: Cache dependencies & Next.js build
+        uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store 
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile  
+
+      - name: Debug Cache Paths
+        run: |
+          ls -la ~/.npm
+          ls -la ${{ github.workspace }}/.next/cache
 
       - name: Build Next.js App
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: pnpm run build  
-
-      - name: Ensure `.next/cache` Exists
-        run: mkdir -p .next/cache
-
-      - name: Cache Next.js build
-        uses: actions/cache@v3
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: nextjs-${{ runner.os }}-
 
       - name: Deploy to Vercel (Production)
         run: |
