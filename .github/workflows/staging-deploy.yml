@@ -21,4 +21,4 @@ jobs:
       - name: Deploy to vercel (staging)
         run: |
           npm install -g vercel 
-          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod=false
+          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod=false --yes
