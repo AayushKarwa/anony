@@ -1,0 +1,22 @@
+name: Deploy to Staging
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next App
+        run: npm run build
+
+      - name: Deploy to vercel (staging)
+        run: |
+          npm install -g vercel 
+          vercel --token ${{ secrets.VERCEL_TOKEN }} --org ${{ secrets.VERCEL_ORG_ID }} --project ${{ secrets.VERCEL_PROJECT_ID }} --scope ${{ secrets.VERCEL_ORG_ID }} --confirm --prod=false
