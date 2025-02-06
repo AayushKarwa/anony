@@ -27,10 +27,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile  
 
-      - name: Build Next App
+      - name: Build Next.js App
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: pnpm run build  
+
+      - name: Ensure `.next/cache` Exists
+        run: mkdir -p .next/cache
+
+      - name: Cache Next.js build
+        uses: actions/cache@v3
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: nextjs-${{ runner.os }}-
 
       - name: Deploy to Vercel (Staging)
         run: |
