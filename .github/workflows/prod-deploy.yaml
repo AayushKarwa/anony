@@ -1,4 +1,4 @@
-name: Deploy to Production
+name: Deploy to Staging
 
 on:
   push:
@@ -19,20 +19,22 @@ jobs:
       - name: Cache PNPM dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.pnpm-store 
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          path: |
+            ~/.pnpm-store
+            node_modules
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-
+            pnpm-${{ runner.os }}-
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile  
+        run: pnpm install --frozen-lockfile  
 
       - name: Build Next App
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: pnpm run build  
 
-      - name: Deploy to Vercel (Production)
+      - name: Deploy to Vercel (staging)
         run: |
           npm i -g vercel  
-          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
+          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod=false --yes
