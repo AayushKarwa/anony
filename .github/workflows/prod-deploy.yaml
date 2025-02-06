@@ -1,9 +1,9 @@
-name: Deploy to Staging
+name: Deploy to Production
 
 on:
   push:
     branches:
-      - main
+      - production
 
 jobs:
   deploy:
@@ -19,22 +19,30 @@ jobs:
       - name: Cache PNPM dependencies
         uses: actions/cache@v3
         with:
-          path: |
-            ~/.pnpm-store
-            node_modules
-          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          path: ~/.pnpm-store 
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            pnpm-${{ runner.os }}-
+            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile  
+        run: pnpm install --no-frozen-lockfile  
 
-      - name: Build Next App
+      - name: Build Next.js App
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: pnpm run build  
 
-      - name: Deploy to Vercel (staging)
+      - name: Ensure `.next/cache` Exists
+        run: mkdir -p .next/cache
+
+      - name: Cache Next.js build
+        uses: actions/cache@v3
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: nextjs-${{ runner.os }}-
+
+      - name: Deploy to Vercel (Production)
         run: |
           npm i -g vercel  
-          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod=false --yes
+          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
