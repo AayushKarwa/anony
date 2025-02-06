@@ -3,7 +3,7 @@ name: Deploy to Production
 on:
   push:
     branches:
-      - production
+      - main
 
 jobs:
   deploy:
@@ -13,32 +13,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js (with caching)
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: 'pnpm'  
-
       - name: Install PNPM
-        run: npm install -g pnpm
+        run: npm install -g pnpm  
 
-      - name: Install dependencies (Faster with Cache)
-        run: pnpm install --frozen-lockfile
-
-      - name: Cache TurboRepo Build Files
+      - name: Cache PNPM dependencies
         uses: actions/cache@v3
         with:
-          path: .turbo
-          key: turbo-${{ runner.os }}-${{ github.ref }}
+          path: ~/.pnpm-store 
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            turbo-${{ runner.os }}-
+            ${{ runner.os }}-pnpm-
 
-      - name: Build Next.js App (Fast)
-        run: pnpm turbo build
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile  
+
+      - name: Build Next App
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: pnpm run build  
 
       - name: Deploy to Vercel (Production)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          npm install -g vercel
-          vercel --prod --yes --token $VERCEL_TOKEN
+          npm i -g vercel  
+          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
