@@ -1,0 +1,49 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install PNPM
+        run: npm install -g pnpm  
+
+      - name: Ensure Next.js Cache Directory Exists
+        run: mkdir -p ${{ github.workspace }}/.next/cache
+
+      - name: Cache dependencies & Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile  
+
+      - name: Debug Cache Paths
+        run: |
+          ls -la ~/.npm
+          ls -la ${{ github.workspace }}/.next/cache
+
+      - name: Build Next.js App
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: pnpm run build  
+
+      - name: Deploy to Vercel (Staging)
+        run: |
+          npm i -g vercel  
+          vercel --token ${{ secrets.VERCEL_TOKEN }} --prod=false --yes
